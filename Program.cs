@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
+using System.Threading.Channels;
 
 class StringCompression
 {
@@ -65,30 +67,32 @@ class StringCompression
         return decompressed.ToString();
     }
 
+    static bool ContainsNumber(string input)
+    {
+        foreach (char c in input)
+        {
+            if (char.IsDigit(c))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     static void Main()
     {
-        Console.WriteLine("Введите строку:");
-        string input = Console.ReadLine();
-        string compressedString = "";
-        string decompressedString = "";
-        Console.WriteLine("Выберите пункт:\n 1. Сжать строку \n 2. Развернуть строку");
-        int choice = int.Parse(Console.ReadLine());
-        Console.WriteLine("Оригинальная строка " + input);
-        switch (choice)
-            { 
-            case 1:
-                compressedString = CompressString(input);
-                Console.WriteLine("Сжатая строка: " + compressedString);
-                break;
-            case 2:
-                decompressedString = DecompressString(input);
-                Console.WriteLine("Расвернутая строка: " + decompressedString);
-                break;
-            default:
-                Console.WriteLine("Вашего выбора нет в списке");
-                break;
+            Console.WriteLine("Введите строку:");
+            string input = Console.ReadLine();
+            string compressedString = "";
+            string decompressedString = "";
 
-            }
+            var result = ContainsNumber(input) ? decompressedString = DecompressString(input) : compressedString = CompressString(input);
+            if (string.IsNullOrEmpty(input))
+                Console.WriteLine("Вы ничего не ввели");
+            else if (result == input)
+                Console.WriteLine($"Ваша строка не содержит цифр или повторяющихся символов и осталась неизменной: {input}");
+            else
+                Console.WriteLine($"Строка после преобразования: {result}");
     }
 }
